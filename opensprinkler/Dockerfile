@@ -1,9 +1,8 @@
-FROM resin/raspberrypi3-alpine as base-img
-
-
+FROM balenalib/armv7hf-alpine:latest as base-img
 
 ########################################
 FROM base-img as build-img
+RUN [ "cross-build-start" ]
 RUN apk --no-cache add \
       bash \
       ca-certificates \
@@ -14,11 +13,12 @@ RUN wget https://github.com/OpenSprinkler/OpenSprinkler-Firmware/archive/master.
     unzip master.zip && \
     cd /OpenSprinkler-Firmware-master && \
     ./build.sh -s ospi
-
+RUN [ "cross-build-end" ]
 
 
 ########################################
 FROM base-img
+RUN [ "cross-build-start" ]
 RUN apk --no-cache add \
       libstdc++ \
     && \
@@ -29,6 +29,7 @@ RUN apk --no-cache add \
     ln -s /data/nvm.dat && \
     ln -s /data/ifkey.txt && \
     ln -s /data/logs
+RUN [ "cross-build-end" ]
 COPY --from=build-img /OpenSprinkler-Firmware-master/OpenSprinkler /OpenSprinkler/OpenSprinkler
 WORKDIR /OpenSprinkler
 

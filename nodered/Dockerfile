@@ -1,5 +1,5 @@
-FROM resin/raspberrypi3-node:8
-
+FROM balenalib/armv7hf-node:latest
+RUN [ "cross-build-start" ]
 # Defines our working directory in container
 RUN mkdir -p /usr/src/app/
 WORKDIR /usr/src/app
@@ -19,7 +19,8 @@ RUN JOBS=MAX npm install -g --production --silent \
     #node-red-node-msgpack \
     #node-red-node-random \
     node-red-node-serialport \
-    node-red-node-suncalc 
+    node-red-node-suncalc
+RUN [ "cross-build-end" ]
 
 COPY ./app ./
 VOLUME /var/lib/node-red
